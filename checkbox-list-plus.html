@@ -1,0 +1,34 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+`checkbox-list-plus`
+A simple list of checkbox-plus elements
+
+@demo demo/index.html 
+-->
+
+<dom-module id="checkbox-list-plus">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]</h2>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'checkbox-list-plus',
+
+      properties: {
+        prop1: {
+          type: String,
+          value: 'checkbox-list-plus',
+        },
+      },
+
+    });
+  </script>
+</dom-module>
