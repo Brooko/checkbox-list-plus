@@ -6,10 +6,9 @@
 
     <title>checkbox-list-plus demo</title>
 
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-
-    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
-    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../bower_components/polymer/polymer.html">
+    <link rel="import" href="../bower_components/iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../bower_components/iron-demo-helpers/demo-snippet.html">
     <link rel="import" href="../checkbox-list-plus.html">
 
     <style is="custom-style" include="demo-pages-shared-styles">
@@ -20,9 +19,50 @@
       <h3>Basic checkbox-list-plus demo</h3>
       <demo-snippet>
         <template>
-          <checkbox-list-plus></checkbox-list-plus>
+          <checkbox-list-plus
+            items="[[items]]"
+            items-checked="{{itemsChecked}}"
+            rules="[[rules]]"
+            attrForSelect="[[attrForSelect]]">
+          </checkbox-list-plus>
+          <h1>YOU HAVE CHOSEN</h1>
+          <template is="dom-repeat" items="[[itemsChecked]]">
+            <div>[[item.label]]</div>
+          </template>
         </template>
       </demo-snippet>
     </div>
   </body>
+  <script>
+    Polymer({
+      properties:{
+        attrForSelect:{
+          type:String,
+          value:"label"
+        },
+        items:{
+          value:[
+            {label:"Larry Page",checked:true},
+            {label:"Linus Torvalds",checked:true},
+            {label:"Steve Jobs",checked:true},
+            {label:"Bill Gates",checked:true},
+            {label:"Simone Brocco",checked:false}
+          ]
+        },
+        itemsChecked:{
+          value:[]
+        },
+        rules:{
+          value:{
+            "3":{
+              disabled:true
+            },
+            "Simone Brocco":{
+              disabled:true
+            }
+          }
+        }
+      }
+    });
+  </script>
 </html>

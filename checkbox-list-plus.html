@@ -1,4 +1,5 @@
-<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/checkbox-plus/checkbox-plus.html">
 
 <!--
 `checkbox-list-plus`
@@ -10,11 +11,44 @@ A simple list of checkbox-plus elements
 <dom-module id="checkbox-list-plus">
   <template>
     <style>
-      :host {
-        display: block;
+      :host{
+      --checkbox-plus-checkbox-container:{
+         margin: 4px;
+       };
+      --checkbox-plus-checkbox:{
+         margin-right: 4px;
+         font-size:var(--checkbox-plus-font-size);
+
+       };
+      --checkbox-plus-checkbox-checked:{
+         background-color: green;
+       };
+      --checkbox-plus-checkbox-unchecked:{
+       };
+
+      --checkbox-plus-checkmark-color:#505050;
+
+      --checkbox-plus-label:{
+         color:#505050;
+         margin-left: 4px;
+         font-size:var(--checkbox-plus-font-size)
+       };
+      --checkbox-plus-label-checked:{
+       };
+      --checkbox-plus-label-unchecked:{
+       };
+      --checkbox-plus-font-size:12px;
       }
     </style>
-    <h2>Hello [[prop1]]</h2>
+    <template is="dom-repeat" items="{{items}}">
+      <checkbox-plus
+       on-change="_returnItemsChecked"
+       label$="[[getLabel(item,attrForLabel)]]"
+       checked$="[[getCheck(item,attrForCheck)]]"
+       required$="[[getRule(rules,item,attrForSelect,index,'required')]]"
+       disabled$="[[getRule(rules,item,attrForSelect,index,'disabled')]]">
+      </checkbox-plus>
+    </template>
   </template>
 
   <script>
@@ -22,13 +56,82 @@ A simple list of checkbox-plus elements
 
       is: 'checkbox-list-plus',
 
-      properties: {
-        prop1: {
-          type: String,
-          value: 'checkbox-list-plus',
-        },
+      ready:function(){
+        // Set attrForCheck
+        this.items=this.items.map(function(item) {
+          if(item[this.attrForCheck]==undefined) {
+            item[this.attrForCheck] = true;
+          }
+          return item;
+        }.bind(this));
       },
 
+      _returnItemsChecked:function(e){
+          this.set("items."+ e.model.index+"."+this.attrForCheck, e.detail);
+      },
+
+      getLabel:function(item,attrForLabel){
+        return item[attrForLabel];
+      },
+
+      getCheck:function(item,attrForCheck){
+        return item[attrForCheck];
+      },
+
+     getRule:function(rules,item,attrForSelect,index,ruleSelected){
+       var currentItemRule;
+       try {
+          currentItemRule = rules[item[attrForSelect]][ruleSelected];
+       } catch(e) {
+         // attForSelected NOT DEFINED OR RULE SET BY ID
+          currentItemRule = this.get('rules.'+index+'.'+ruleSelected);
+       }
+       return (currentItemRule != undefined ?
+               currentItemRule : false);
+      },
+
+      _itemsChanged:function() {
+        this.set("itemsChecked",this.items.filter(function(item){
+          return item[this.attrForCheck]
+        }.bind(this)));
+        this.set("indexesChecked",this.items.indexOf(this.items.filter(function(item){
+          return item[this.attrForCheck]
+        }.bind(this))));
+      },
+
+      observers:[
+          "_itemsChanged(items.*)"
+      ],
+
+      properties: {
+        attrForSelect:{
+          type:String,
+          value:null
+        },
+        attrForCheck:{
+          type:String,
+          value:"checked"
+        },
+        attrForLabel:{
+            type:String,
+            value:"label"
+        },
+        rules:{
+          value:null
+        },
+        items: {
+          value: null
+        },
+        itemsChecked:{
+          value:null,
+          notify:true
+        },
+        indexesChecked:{
+          type:Array,
+          value:[],
+          notify:true
+        },
+      }
     });
   </script>
 </dom-module>
