@@ -10,36 +10,6 @@ A simple list of checkbox-plus elements
 
 <dom-module id="checkbox-list-plus">
   <template>
-    <style>
-      :host{
-      --checkbox-plus-checkbox-container:{
-         margin: 4px;
-       };
-      --checkbox-plus-checkbox:{
-         margin-right: 4px;
-         font-size:var(--checkbox-plus-font-size);
-
-       };
-      --checkbox-plus-checkbox-checked:{
-         background-color: green;
-       };
-      --checkbox-plus-checkbox-unchecked:{
-       };
-
-      --checkbox-plus-checkmark-color:#505050;
-
-      --checkbox-plus-label:{
-         color:#505050;
-         margin-left: 4px;
-         font-size:var(--checkbox-plus-font-size)
-       };
-      --checkbox-plus-label-checked:{
-       };
-      --checkbox-plus-label-unchecked:{
-       };
-      --checkbox-plus-font-size:12px;
-      }
-    </style>
     <template is="dom-repeat" items="{{items}}">
       <checkbox-plus
        on-change="_returnItemsChecked"
@@ -53,7 +23,6 @@ A simple list of checkbox-plus elements
 
   <script>
     Polymer({
-
       is: 'checkbox-list-plus',
 
       ready:function(){
@@ -117,19 +86,22 @@ A simple list of checkbox-plus elements
             value:"label"
         },
         rules:{
-          value:null
+            type:Array,
+            value:null
         },
         items: {
-          value: null
+            type:Array,
+            value: null
         },
         itemsChecked:{
-          value:null,
-          notify:true
+            type:Array,
+            value:null,
+            notify:true
         },
         indexesChecked:{
-          type:Array,
-          value:[],
-          notify:true
+            type:Array,
+            value:[],
+            notify:true
         },
       }
     });
