@@ -1,5 +1,5 @@
-<link rel="import" href="bower_components/polymer/polymer.html">
-<link rel="import" href="bower_components/checkbox-plus/checkbox-plus.html">
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../option-button-plus/option-button-plus.html">
 
 <!--
 `checkbox-list-plus`
@@ -11,13 +11,14 @@ A simple list of checkbox-plus elements
 <dom-module id="checkbox-list-plus">
   <template>
     <template is="dom-repeat" items="{{items}}">
-      <checkbox-plus
+
+      <option-button-plus
+       button-type="checkbox"
        on-change="_returnItemsChecked"
        label$="[[getLabel(item,attrForLabel)]]"
-       checked$="[[getCheck(item,attrForCheck)]]"
-       required$="[[getRule(rules,item,attrForSelect,index,'required')]]"
-       disabled$="[[getRule(rules,item,attrForSelect,index,'disabled')]]">
-      </checkbox-plus>
+       selected$="[[getCheck(item,attrForCheck)]]"
+       disabled$="[[getRule(rules,item,index,'disabled')]]">
+      </option-button-plus>
     </template>
   </template>
 
@@ -29,7 +30,7 @@ A simple list of checkbox-plus elements
         // Set attrForCheck
         this.items=this.items.map(function(item) {
           if(item[this.attrForCheck]==undefined) {
-            item[this.attrForCheck] = true;
+            item[this.attrForCheck] = false;
           }
           return item;
         }.bind(this));
@@ -47,25 +48,29 @@ A simple list of checkbox-plus elements
         return item[attrForCheck];
       },
 
-     getRule:function(rules,item,attrForSelect,index,ruleSelected){
-       var currentItemRule;
-       try {
-          currentItemRule = rules[item[attrForSelect]][ruleSelected];
-       } catch(e) {
-         // attForSelected NOT DEFINED OR RULE SET BY ID
-          currentItemRule = this.get('rules.'+index+'.'+ruleSelected);
-       }
-       return (currentItemRule != undefined ?
-               currentItemRule : false);
-      },
+      getRule:function(rules,item,index,ruleSelected){
+        var currentItemRule;
+        try {
+            currentItemRule = rules[item[this.attrForSelect]][ruleSelected];
+        } catch(e) {
+            // attForSelected NOT DEFINED OR RULE SET BY ID
+            currentItemRule = this.get('rules.'+index+'.'+ruleSelected);
+        }
+        if(ruleSelected=='disabled'&&this.disabled){
+            currentItemRule=true;
+        }
+        return (currentItemRule != undefined ?
+                currentItemRule : false);
+        },
 
       _itemsChanged:function() {
         this.set("itemsChecked",this.items.filter(function(item){
           return item[this.attrForCheck]
         }.bind(this)));
-        this.set("indexesChecked",this.items.indexOf(this.items.filter(function(item){
-          return item[this.attrForCheck]
-        }.bind(this))));
+        this.set("indexesChecked",this.itemsChecked.map(function(itemChecked){
+              return this.items.indexOf(itemChecked)
+        }.bind(this)));
+          //console.log(this.indexesChecked)
       },
 
       observers:[
@@ -91,7 +96,8 @@ A simple list of checkbox-plus elements
         },
         items: {
             type:Array,
-            value: null
+            value: null,
+            notify:true
         },
         itemsChecked:{
             type:Array,
@@ -103,6 +109,10 @@ A simple list of checkbox-plus elements
             value:[],
             notify:true
         },
+        disabled:{
+            type:Boolean,
+            value:false
+        }
       }
     });
   </script>
